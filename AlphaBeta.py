@@ -4,7 +4,7 @@ import math
 
 directionVectors = (UP_VEC, DOWN_VEC, LEFT_VEC, RIGHT_VEC) = ((-1, 0), (1, 0), (0, -1), (0, 1))
 LogTable = {2 : 1, 4 : 2, 8 : 3, 16 : 4, 32 : 5, 64 : 6, 128 : 7, 256 : 8, 512 : 9, 1024 : 10, 2048 : 11, 4096 : 12, 8192 : 13} 
-EmptyPenalty = {16 : 1000, 15 : 1000, 14 : 975, 13 : 950, 12: 900, 11 : 850, 10 : 750, 9 : 600, 8 : 400, 7 : 200, 6 :   0, 5 : -200, 4 : -400, 3 : -700, 2 : -1000, 1 : -1500, 0 : -2000}  
+EmptyPenalty = {16 : 1000, 15 : 1000, 14 : 950, 13 : 900, 12: 850, 11 : 800, 10 : 700, 9 : 600, 8 : 500, 7 : 350, 6 : 200, 5 :   50, 4 : -200, 3 : -500, 2 : - 800, 1 : -1200, 0 : -1800}  
 
 
 def square_sum(grid):
@@ -115,14 +115,14 @@ def emptyness(grid):
 
 def evaluate(grid):
     smoothWeight = 6.0  
-    monoWeight = 25 
+    monoWeight = 15 
     emptyWeight = 20
     maxWeight = 5.0
 
     smooth = smoothness(grid) * smoothWeight
     mono = monotonicity(grid) * monoWeight
     avail_cells_num = len(grid.getAvailableCells())
-    empty = EmptyPenalty[avail_cells_num]
+    empty = EmptyPenalty[avail_cells_num] * 1.8
     #if avail_cells_num == 0:
     #    empty = -100
     #else:
