@@ -6,16 +6,6 @@ directionVectors = (UP_VEC, DOWN_VEC, LEFT_VEC, RIGHT_VEC) = ((-1, 0), (1, 0), (
 LogTable = {0: 0, 2 : 1, 4 : 2, 8 : 3, 16 : 4, 32 : 5, 64 : 6, 128 : 7, 256 : 8, 512 : 9, 1024 : 10, 2048 : 11, 4096 : 12, 8192 : 13} 
 EmptyPenalty = {16 : 1000, 15 : 1000, 14 : 950, 13 : 900, 12: 850, 11 : 800, 10 : 700, 9 : 600, 8 : 500, 7 : 350, 6 : 200, 5 :   50, 4 : -200, 3 : -500, 2 : - 800, 1 : -1200, 0 : -1800}  
 
-
-def square_sum(grid):
-    sum = 0
-    for x in grid.map:
-        for y in x:
-            if y != 0:
-                log_y = math.log(y, 2)
-                sum += log_y * log_y
-    return sum
-
 def findFarthestAdj(grid, (x, y), direction):
     while True:
         new_x, new_y = x + directionVectors[direction][0], y + directionVectors[direction][1]
