@@ -3,7 +3,7 @@ __author__ = 'xin'
 import math
 
 directionVectors = (UP_VEC, DOWN_VEC, LEFT_VEC, RIGHT_VEC) = ((-1, 0), (1, 0), (0, -1), (0, 1))
-LogTable = {2 : 1, 4 : 2, 8 : 3, 16 : 4, 32 : 5, 64 : 6, 128 : 7, 256 : 8, 512 : 9, 1024 : 10, 2048 : 11, 4096 : 12, 8192 : 13} 
+LogTable = {0: 0, 2 : 1, 4 : 2, 8 : 3, 16 : 4, 32 : 5, 64 : 6, 128 : 7, 256 : 8, 512 : 9, 1024 : 10, 2048 : 11, 4096 : 12, 8192 : 13} 
 EmptyPenalty = {16 : 1000, 15 : 1000, 14 : 950, 13 : 900, 12: 850, 11 : 800, 10 : 700, 9 : 600, 8 : 500, 7 : 350, 6 : 200, 5 :   50, 4 : -200, 3 : -500, 2 : - 800, 1 : -1200, 0 : -1800}  
 
 
@@ -25,7 +25,6 @@ def findFarthestAdj(grid, (x, y), direction):
         x, y = new_x, new_y
         if new_cell != 0:
             break
-    #print "return x, y = ", x, " ", y
     return grid.map[x][y]
 
 
@@ -36,9 +35,7 @@ def smoothness(grid):
             if grid.map[x][y] != 0:
                 value = LogTable[grid.map[x][y]]
                 for direction in (0, 2):
-                    #print "x, y = ", x, y, " direction = ", direction
                     adjCellValue = findFarthestAdj(grid, (x, y), direction)
-                    #print "type findFarthest Adj= ", type(adjCellValue)
                     if adjCellValue != 0:
                         targetValue = LogTable[adjCellValue]
                         smooth -= math.fabs(value - targetValue)
@@ -59,17 +56,8 @@ def monotonicity(grid):
                 next += 1
             if next == grid.size:
                 break
-            curCellVal = grid.map[x][current]
-            curCellVal = 0 if curCellVal == 0 else LogTable[curCellVal]
-            nextCellVal = grid.map[x][next]
-            nextCellVal = 0 if nextCellVal == 0 else LogTable[nextCellVal]
-            #if curCellVal > nextCellVal:
-            #    mono[0] += nextCellVal - curCellVal
-            #elif nextCellVal > curCellVal:
-            #    mono[1] += curCellVal - nextCellVal
-            #mono[0] += 1 if curCellVal > nextCellVal else 0
-            #if curCellVal > nextCellVal:
-            #    mono[0] += nextCellVal - curCellVal
+            curCellVal = LogTable[grid.map[x][current]]
+            nextCellVal = LogTable[grid.map[x][next]]
             mono[0] += curCellVal - nextCellVal
             mono[1] += nextCellVal - curCellVal
             current = next
@@ -85,17 +73,8 @@ def monotonicity(grid):
                 next += 1
             if next == grid.size:
                 break
-            curCellVal = grid.map[current][y]
-            curCellVal = 0 if curCellVal == 0 else LogTable[curCellVal]
-            nextCellVal = grid.map[next][y]
-            nextCellVal = 0 if nextCellVal == 0 else LogTable[nextCellVal]
-            #if curCellVal > nextCellVal:
-            #    mono[2] += nextCellVal - curCellVal
-            #elif nextCellVal > curCellVal:
-            #    mono[3] += curCellVal - nextCellVal
-            #mono[2] += 1 if curCellVal > nextCellVal else 0
-            #if curCellVal > nextCellVal:
-            #    mono[2] += nextCellVal - curCellVal
+            curCellVal = LogTable[grid.map[current][y]]
+            nextCellVal = LogTable[grid.map[next][y]]
             mono[2] += curCellVal - nextCellVal
             mono[3] += nextCellVal - curCellVal
             current = next
@@ -106,11 +85,6 @@ def monotonicity(grid):
 
 def emptyness(grid):
     avail_cells_num = len(grid.getAvailableCells())
-    #if avail_cells_num == 0:
-    #    empty = -100
-    #else:
-        #log_avail_cells_num = math.log(avail_cells_num) / math.log(2)
-    #    empty = avail_cells_num * avail_cells_num * avail_cells_num * 20
     return EmptyPenalty[avail_cells_num]
 
 def evaluate(grid):
@@ -123,20 +97,10 @@ def evaluate(grid):
     mono = monotonicity(grid) * monoWeight
     avail_cells_num = len(grid.getAvailableCells())
     empty = EmptyPenalty[avail_cells_num] * 1.8
-    #if avail_cells_num == 0:
-    #    empty = -100
-    #else:
-    #    empty = avail_cells_num * avail_cells_num * avail_cells_num * emptyWeight
-        #if avail_cells_num < 3:
-        #    empty *= 2
-        #    smooth *= 0.5
-        #    mono *= 0.15
     maxtile = grid.getMaxTile() * maxWeight
     #print "smooth = ", smooth, " mono = ", mono, " empty = ", empty, " maxtile = ", maxtile
 
-
     return smooth + mono + empty + maxtile
-
 
 
 def maxValue(grid, alpha, beta, depth):
@@ -148,7 +112,6 @@ def maxValue(grid, alpha, beta, depth):
     depth -= 1
     v = float('-inf')
 
-    # grid_backup = grid.clone()
     bestMove = None
     for i in grid.getAvailableMoves():
         if bestMove is None:
