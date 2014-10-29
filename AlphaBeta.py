@@ -6,6 +6,8 @@ directionVectors = (UP_VEC, DOWN_VEC, LEFT_VEC, RIGHT_VEC) = ((-1, 0), (1, 0), (
 LogTable = {0: 0, 2 : 1, 4 : 2, 8 : 3, 16 : 4, 32 : 5, 64 : 6, 128 : 7, 256 : 8, 512 : 9, 1024 : 10, 2048 : 11, 4096 : 12, 8192 : 13} 
 EmptyPenalty = {16 : 1000, 15 : 1000, 14 : 950, 13 : 900, 12: 850, 11 : 800, 10 : 700, 9 : 600, 8 : 500, 7 : 350, 6 : 200, 5 :   50, 4 : -200, 3 : -500, 2 : - 800, 1 : -1200, 0 : -1800}  
 
+edge_bonus = 1.5
+
 def findFarthestAdj(grid, (x, y), direction):
     while True:
         new_x, new_y = x + directionVectors[direction][0], y + directionVectors[direction][1]
@@ -28,14 +30,17 @@ def smoothness(grid):
                     adjCellValue = findFarthestAdj(grid, (x, y), direction)
                     if adjCellValue != 0:
                         targetValue = LogTable[adjCellValue]
-                        smooth -= math.fabs(value - targetValue)
+                        diff = math.fabs(value - targetValue)
+                        if x == 0 or x == grid.size or y == 0 or y == grid.size:
+                            diff *= edge_bonus
+                        smooth -= diff
     return smooth
 
 
 def monotonicity(grid):
     #monotonicity for left, right, up, down direction
     mono = [0, 0, 0, 0]
-
+    
     #left/right direction
     for x in xrange(grid.size):
         current = 0
@@ -48,8 +53,11 @@ def monotonicity(grid):
                 break
             curCellVal = LogTable[grid.map[x][current]]
             nextCellVal = LogTable[grid.map[x][next]]
-            mono[0] += curCellVal - nextCellVal
-            mono[1] += nextCellVal - curCellVal
+            diff = curCellVal - nextCellVal
+            if x == 0 or x == grid.size:
+                diff *= edge_bonus
+            mono[0] += diff
+            mono[1] -= diff
             current = next
             next += 1
 
@@ -65,8 +73,11 @@ def monotonicity(grid):
                 break
             curCellVal = LogTable[grid.map[current][y]]
             nextCellVal = LogTable[grid.map[next][y]]
-            mono[2] += curCellVal - nextCellVal
-            mono[3] += nextCellVal - curCellVal
+            diff = curCellVal - nextCellVal
+            if y == 0 or y == grid.size:
+                diff *= edge_bonus
+            mono[2] += diff
+            mono[3] -= diff
             current = next
             next += 1
 
