@@ -31,13 +31,13 @@ class PlayerAI(BaseAI):
         # I'm too naive, please change me!
         depth = 8
         bestmove = maxValue(grid, float('-inf'), float('inf'), depth)[1]
-        mono = monotonicity(grid) * 20
-        smooth = smoothness(grid) * 6.0
-        empty = emptyness(grid)  
+        #mono = monotonicity(grid) * 20
+        #smooth = smoothness(grid) * 6.0
+        #empty = emptyness(grid)  
         #sqr_sum = square_sum(grid) * 0.1
-        maxtile = grid.getMaxTile() * 3.0
+        #maxtile = grid.getMaxTile() * 3.0
         #if len(grid.getAvailableCells()) < 4:
         #    smooth *= 0.15
         #    mono *= 0.15
-        print "player best move = ", bestmove, " monotonicity = ", mono, " smoothness = ", smooth, " empty = ", empty, " maxtile = ", maxtile
+        #print "player best move = ", bestmove, " monotonicity = ", mono, " smoothness = ", smooth, " empty = ", empty, " maxtile = ", maxtile
         return bestmove
