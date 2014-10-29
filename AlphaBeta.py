@@ -114,10 +114,10 @@ def emptyness(grid):
     return EmptyPenalty[avail_cells_num]
 
 def evaluate(grid):
-    smoothWeight = 6.0  
-    monoWeight = 15 
+    smoothWeight = 6.5  
+    monoWeight = 16 
     emptyWeight = 20
-    maxWeight = 5.0
+    maxWeight = 5.5
 
     smooth = smoothness(grid) * smoothWeight
     mono = monotonicity(grid) * monoWeight
