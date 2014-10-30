@@ -11,9 +11,9 @@ edge_bonus = 1.5
 def findFarthestAdj(grid, (x, y), direction):
     while True:
         new_x, new_y = x + directionVectors[direction][0], y + directionVectors[direction][1]
-        new_cell = grid.map[new_x][new_y]
-        if new_cell is None:        #cross bound
+        if new_x < 0 or new_x >= grid.size or new_y < 0 or new_y >= grid.size:
             break
+        new_cell = grid.map[new_x][new_y]
         x, y = new_x, new_y
         if new_cell != 0:
             break
@@ -26,7 +26,7 @@ def smoothness(grid):
         for y in xrange(grid.size):
             if grid.map[x][y] != 0:
                 value = LogTable[grid.map[x][y]]
-                for direction in (0, 2):
+                for direction in (1, 3):
                     adjCellValue = findFarthestAdj(grid, (x, y), direction)
                     if adjCellValue != 0:
                         targetValue = LogTable[adjCellValue]
@@ -89,16 +89,15 @@ def emptyness(grid):
     return EmptyPenalty[avail_cells_num]
 
 def evaluate(grid):
-    smoothWeight = 6.5  
-    monoWeight = 16 
-    emptyWeight = 20
+    smoothWeight = 6.5
+    monoWeight = 16
     maxWeight = 5.5
 
     smooth = smoothness(grid) * smoothWeight
     mono = monotonicity(grid) * monoWeight
     avail_cells_num = len(grid.getAvailableCells())
-    empty = EmptyPenalty[avail_cells_num] * 1.8
-    maxtile = grid.getMaxTile() * maxWeight
+    empty = EmptyPenalty[avail_cells_num]
+    maxtile = grid.getMaxTile() * maxWeight * 0.2
     #print "smooth = ", smooth, " mono = ", mono, " empty = ", empty, " maxtile = ", maxtile
 
     return smooth + mono + empty + maxtile
@@ -142,7 +141,7 @@ def minValue(grid, alpha, beta, depth):
     for i in grid.getAvailableCells():
         for tileValue in (2, 4):
             gridCopy = grid.clone()
-            grid.insertTile(i, tileValue)
+            gridCopy.insertTile(i, tileValue)
             value, __ = maxValue(gridCopy, alpha, beta, depth)
             if value < v:
                 bestMove = i
