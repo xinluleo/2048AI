@@ -9,7 +9,7 @@ import math
 
 class PlayerAI(BaseAI):
     def getMove(self, grid):
-        depth = 9
+        depth = 8
         bestmove = maxValue(grid, float('-inf'), float('inf'), depth)[1]
         #mono = monotonicity(grid) * 15
         #smooth = smoothness(grid) * 6.0

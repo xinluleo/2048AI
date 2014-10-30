@@ -90,14 +90,14 @@ def emptyness(grid):
 
 def evaluate(grid):
     smoothWeight = 6.5
-    monoWeight = 16
+    monoWeight = 60
     maxWeight = 5.5
 
     smooth = smoothness(grid) * smoothWeight
     mono = monotonicity(grid) * monoWeight
     avail_cells_num = len(grid.getAvailableCells())
-    empty = EmptyPenalty[avail_cells_num]
-    maxtile = grid.getMaxTile() * maxWeight * 0.2
+    empty = EmptyPenalty[avail_cells_num] * 1.8
+    maxtile = grid.getMaxTile() * maxWeight 
     #print "smooth = ", smooth, " mono = ", mono, " empty = ", empty, " maxtile = ", maxtile
 
     return smooth + mono + empty + maxtile
