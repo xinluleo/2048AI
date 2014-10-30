@@ -206,7 +206,7 @@ def evaluate(grid):
     mono = monotonicity(grid, rows, cols) * monoWeight
 
     avail_cells_num = len(grid.getAvailableCells())
-    empty = EmptyPenalty[avail_cells_num] * 1.8
+    empty = EmptyPenalty[avail_cells_num] * 0.3
     maxtile = grid.getMaxTile() * maxWeight
     #print "smooth = ", smooth, " mono = ", mono, " empty = ", empty, " maxtile = ", maxtile
 
@@ -251,7 +251,7 @@ def minValue(grid, alpha, beta, depth):
     for i in grid.getAvailableCells():
         for tileValue in (2, 4):
             gridCopy = grid.clone()
-            grid.insertTile(i, tileValue)
+            gridCopy.insertTile(i, tileValue)
             value, __ = maxValue(gridCopy, alpha, beta, depth)
             if value < v:
                 bestMove = i
